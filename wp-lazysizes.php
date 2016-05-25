@@ -42,8 +42,7 @@ class LazySizes {
 
         if ( !is_admin() ) {
 
-            $this->_get_options();
-
+            add_action( 'wp_enqueue_scripts', array( $this, '_get_options' ), 1 );
             add_action( 'wp_enqueue_scripts', array( $this, 'add_styles' ), 1 );
             add_action( 'wp_enqueue_scripts', array( $this, 'add_scripts' ), 200 );
             // Run this later, so other content filters have run, including image_add_wh on WP.com
@@ -58,6 +57,7 @@ class LazySizes {
         }
     }
 
+
     public static function get_instance() {
         if (!isset(self::$instance)) {
             self::$instance = new self;
@@ -65,7 +65,8 @@ class LazySizes {
         return self::$instance;
     }
 
-    private function _get_options() {
+
+    public function _get_options() {
 
         global $lazySizesDefaults;
 
