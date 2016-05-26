@@ -36,6 +36,7 @@ class LazySizes {
 
     const version = '0.9.2';
     private static $options = array();
+    private static $instance;
 
     function __construct() {
 
@@ -56,6 +57,13 @@ class LazySizes {
             }
             add_filter('get_avatar', array($this, 'filter_avatar'), 200);
         }
+    }
+
+    public static function get_instance() {
+        if (!isset(self::$instance)) {
+            self::$instance = new self;
+        }
+        return self::$instance;
     }
 
     private function _get_options() {
@@ -233,6 +241,6 @@ class LazySizes {
     }
 }
 
-new LazySizes();
+LazySizes::get_instance();
 
 endif;
