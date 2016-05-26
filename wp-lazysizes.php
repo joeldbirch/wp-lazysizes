@@ -107,14 +107,14 @@ class LazySizes {
     }
 
     private function get_js_config() {
-        $preloadAfterLoad = $this->_get_option('preloadAfterLoad');
-        if ($preloadAfterLoad === 'smart') {
-            $preloadAfterLoad = wp_is_mobile() ? 'true' : 'false';
-        }
         return array(
-            'preloadAfterLoad' => $preloadAfterLoad,
-            'expand' => $this->_get_option('expand')
-        );
+            'expand'           => $this->_get_option('expand'),
+            'preloadAfterLoad' => $this->should_preload( $this->_get_option('preloadAfterLoad') )
+            );
+    }
+
+    private function should_preload( $option ) {
+        return ($option === 'smart') ? var_export(!wp_is_mobile(), true) : $option;
     }
 
     // can we replace this with equivalent PHP test? Using wp_is_mobile for now
