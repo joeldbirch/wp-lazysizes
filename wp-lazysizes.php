@@ -46,7 +46,6 @@ class LazySizes {
 
             add_action( 'wp_enqueue_scripts', array( $this, 'add_styles' ), 1 );
             add_action( 'wp_enqueue_scripts', array( $this, 'add_scripts' ), 200 );
-            add_action( 'wp_footer', array($this, 'print_config'));
             // Run this later, so other content filters have run, including image_add_wh on WP.com
             add_filter( 'the_content', array( $this, 'filter_images'), 200 );
             add_filter( 'post_thumbnail_html', array( $this, 'filter_images'), 200 );
@@ -101,22 +100,20 @@ class LazySizes {
             wp_enqueue_script( 'lazysizesoptimumx',
                 $this->get_url( 'js/lazysizes/plugins/optimumx/ls.optimumx.min.js' ), array(), self::version, false );
         }
+
+        wp_localize_script( 'lazysizes', 'lazySizesConfig', $this->get_js_config() );
+
     }
 
-    public function print_config() {
-
-        // @FIXME Script printing is bad habit.
-        ?>
-        <script type="text/javascript">
-            window.lazySizesConfig = window.lazySizesConfig || {};
-            <?php if($this->_get_option('preloadAfterLoad') == 'smart') : ?>
-                window.lazySizesConfig.preloadAfterLoad = !<?php echo $this->is_mobile_js(); ?>;
-            <?php else : ?>
-                window.lazySizesConfig.preloadAfterLoad = <?php echo $this->_get_option('preloadAfterLoad'); ?>;
-            <?php endif; ?>
-            window.lazySizesConfig.expand = <?php echo $this->_get_option('expand'); ?>;
-        </script>
-    <?php
+    private function get_js_config() {
+        $preloadAfterLoad = $this->_get_option('preloadAfterLoad');
+        if ($preloadAfterLoad === 'smart') {
+            $preloadAfterLoad = wp_is_mobile() ? 'true' : 'false';
+        }
+        return array(
+            'preloadAfterLoad' => $preloadAfterLoad,
+            'expand' => $this->_get_option('expand')
+        );
     }
 
     // can we replace this with equivalent PHP test? Using wp_is_mobile for now
