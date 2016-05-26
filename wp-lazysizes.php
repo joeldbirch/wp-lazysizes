@@ -62,7 +62,7 @@ class LazySizes {
 
         global $lazySizesDefaults;
 
-        self::$options = wp_parse_args( get_option( 'lazysizes_settings', $lazySizesDefaults), $lazySizesDefaults );
+        self::$options = get_option( 'lazysizes_settings', $lazySizesDefaults);
 
         if ( is_numeric( $this->_get_option( 'expand' ) ) ) {
             self::$options['expand'] = (float)self::$options['expand'];
