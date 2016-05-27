@@ -28,11 +28,7 @@ class LazySizesTest extends WP_UnitTestCase {
 
 		$this->assertTrue( !empty($content) );
 		$this->assertTrue( strpos($content, 'var lazySizesConfig =' ) !== false );
-
-		// var_export converts boolean 1 or 0 to string 'true' or 'false'
-		$true_or_false = var_export(!wp_is_mobile(), true );
-
-		$this->assertTrue( strpos($content, '"preloadAfterLoad":"'.$true_or_false.'"' ) !== false );
+		$this->assertTrue( strpos($content, '"preloadAfterLoad":"smart"' ) !== false );
 	}
 
 }
