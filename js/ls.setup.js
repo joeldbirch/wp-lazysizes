@@ -1,4 +1,4 @@
-window.lazySizesConfig = window.lazySizesConfig || {};
+window.lazySizesConfig = window.lazySizesConfig || {preloadAfterLoad: 'false'};
 
 (function (config) {
 
@@ -8,8 +8,10 @@ window.lazySizesConfig = window.lazySizesConfig || {};
 
 	config.setSmartPreload = function (isMobile) {
 		if (config.preloadAfterLoad === 'smart') {
-			config.preloadAfterLoad = (! isMobile ).toString();
+			config.preloadAfterLoad = !isMobile;
 		}
+		// convert 'true' or 'false' string from wp_localize_script to boolean:
+		config.preloadAfterLoad = JSON.parse(config.preloadAfterLoad);
 	};
 
 	config.setSmartPreload( config.checkIfMobile(navigator.userAgent || navigator.vendor || window.opera) );

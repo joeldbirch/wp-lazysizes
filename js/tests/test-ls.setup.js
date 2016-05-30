@@ -30,36 +30,36 @@ describe('setSmartPreload', function () {
 		expect(typeof window.lazySizesConfig.setSmartPreload === 'function').toBe(true);
 	});
 
-	it('should change the value of window.lazySizesConfig.preloadAfterLoad to string "true" or "false" if set to "smart"', function () {
+	it('should change the value of window.lazySizesConfig.preloadAfterLoad to boolean "true" or "false" if set to "smart"', function () {
 		window.lazySizesConfig.preloadAfterLoad = 'smart';
 		// pass false to simulate desktop
 		window.lazySizesConfig.setSmartPreload( false );
-		expect(window.lazySizesConfig.preloadAfterLoad).toBe("true");
+		expect(window.lazySizesConfig.preloadAfterLoad).toBe(true);
 
 		window.lazySizesConfig.preloadAfterLoad = 'smart';
 		// pass true to simulate mobile
 		window.lazySizesConfig.setSmartPreload( true )
-		expect(window.lazySizesConfig.preloadAfterLoad).toBe("false");
+		expect(window.lazySizesConfig.preloadAfterLoad).toBe(false);
 	});
 
 	it('should leave window.lazySizesConfig.preloadAfterLoad as either string "true" or "false" if it is already set to that, regardless of if mobile', function() {
 		// simulate desktop with default 'false' preloadAfterLoad setting
 		window.lazySizesConfig.setSmartPreload( false );
-		expect(window.lazySizesConfig.preloadAfterLoad).toBe("false");
+		expect(window.lazySizesConfig.preloadAfterLoad).toBe(false);
 
 		// simulate mobile with default 'false' preloadAfterLoad setting
 		window.lazySizesConfig.setSmartPreload( true );
-		expect(window.lazySizesConfig.preloadAfterLoad).toBe("false");
+		expect(window.lazySizesConfig.preloadAfterLoad).toBe(false);
 
 		window.lazySizesConfig.preloadAfterLoad = 'true';
 
 		// simulate desktop with preloadAfterLoad set to 'true'
 		window.lazySizesConfig.setSmartPreload( false );
-		expect(window.lazySizesConfig.preloadAfterLoad).toBe("true");
+		expect(window.lazySizesConfig.preloadAfterLoad).toBe(true);
 
 		// simulate mobile with preloadAfterLoad set to 'true'
 		window.lazySizesConfig.setSmartPreload( true );
-		expect(window.lazySizesConfig.preloadAfterLoad).toBe("true");
+		expect(window.lazySizesConfig.preloadAfterLoad).toBe(true);
 	});
 });
 
