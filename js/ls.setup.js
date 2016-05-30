@@ -12,5 +12,7 @@ window.lazySizesConfig = window.lazySizesConfig || {preloadAfterLoad: 'false'};
 	};
 
 	c.setSmartPreload( c.checkIfMobile(navigator.userAgent || navigator.vendor || window.opera) );
+	// convert expand to integer
+	c.expand = c.expand * 1;
 
 }) (window.lazySizesConfig);
