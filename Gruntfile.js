@@ -17,22 +17,23 @@
 				}
 			},
 
-			concat: {
-				dist: {
-					src: ['js/ls.setup.js', 'js/lazysizes/lazysizes.min.js'],
-					dest: 'build/wp-lazysizes.min.js',
-				},
+			uglify: {
+				build: {
+					files: {
+						'build/wp-lazysizes.min.js': ['js/ls.setup.js', 'js/lazysizes/lazysizes.js']
+					}
+				}
 			}
 		});
 
 		grunt.loadNpmTasks('grunt-contrib-copy');
-		grunt.loadNpmTasks('grunt-contrib-concat');
+		grunt.loadNpmTasks('grunt-contrib-uglify');
 
 
 		// Default task.
 		grunt.registerTask('default', [ 'copy' ]);
 
 		// Concatenate lazysizes JS with mobile detection JS files.
-		grunt.registerTask('build', [ 'concat' ]);
+		grunt.registerTask('build', [ 'uglify' ]);
 	};
 })();
