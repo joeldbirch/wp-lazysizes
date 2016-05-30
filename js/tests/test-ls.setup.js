@@ -6,7 +6,7 @@ var iphone_ua = 'Mozilla/5.0 (iPhone; CPU iPhone OS 6_1_4 like Mac OS X) AppleWe
 beforeEach(function () {
 	window.lazySizesConfig = window.lazySizesConfig || {};
 	window.lazySizesConfig.preloadAfterLoad = 'false';
-	window.lazySizesConfig.expand = 359;
+	window.lazySizesConfig.expand = '359';
 });
 
 
@@ -63,3 +63,9 @@ describe('setSmartPreload', function () {
 	});
 });
 
+describe('convertToInt', function () {
+	it('should convert the "expand" value to an integer', function() {
+		window.lazySizesConfig.convertToInt(window.lazySizesConfig.expand);
+		expect(window.lazySizesConfig.expand).toBe(359);
+	});
+});

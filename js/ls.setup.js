@@ -11,8 +11,12 @@ window.lazySizesConfig = window.lazySizesConfig || {preloadAfterLoad: 'false'};
 		c.preloadAfterLoad = (c.preloadAfterLoad === 'smart') ? !isMobile : JSON.parse(c.preloadAfterLoad);
 	};
 
+	c.convertToInt = function (value) {
+		c.expand = value * 1;
+	};
+
 	c.setSmartPreload( c.checkIfMobile(navigator.userAgent || navigator.vendor || window.opera) );
-	// convert expand to integer
-	c.expand = c.expand * 1;
+
+	c.convertToInt(c.expand);
 
 }) (window.lazySizesConfig);
