@@ -42,7 +42,7 @@ describe('setSmartPreload', function () {
 		expect(window.lazySizesConfig.preloadAfterLoad).toBe(false);
 	});
 
-	it('should leave window.lazySizesConfig.preloadAfterLoad as either string "true" or "false" if it is already set to that, regardless of if mobile', function() {
+	it('should convert window.lazySizesConfig.preloadAfterLoad to boolean if not "smart", regardless of if mobile', function() {
 		// simulate desktop with default 'false' preloadAfterLoad setting
 		window.lazySizesConfig.setSmartPreload( false );
 		expect(window.lazySizesConfig.preloadAfterLoad).toBe(false);
