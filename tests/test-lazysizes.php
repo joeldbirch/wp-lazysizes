@@ -47,11 +47,37 @@ class LazySizesTest extends WP_UnitTestCase {
 		$this->assertTrue( $this->instance->should_not_filter_images() === true );
 	}
 
-	function test_get_resp_img_replacement() {
-		$this->assertSame( $this->instance->get_resp_img_replacement(), 'data-sizes="auto" data-srcset=' );
+	function test_get_resp_attrs() {
+		$this->assertSame( $this->instance->get_resp_attrs(), 'data-sizes="auto" data-srcset=' );
 		$this->set_option('optimumx','auto');
-		$this->assertSame( $this->instance->get_resp_img_replacement(), 'data-optimumx="auto" data-sizes="auto" data-srcset=' );
+		$this->assertSame( $this->instance->get_resp_attrs(), 'data-optimumx="auto" data-sizes="auto" data-srcset=' );
 	}
 
+	function test_apply_responsive_attrs() {
+		$altered_string = $this->instance->apply_responsive_attrs('<img srcset="/some/image.jpg">');
+		$this->assertSame( $altered_string, '<img data-optimumx="auto" data-sizes="auto" data-srcset="/some/image.jpg">' );
+	}
+
+	function test_apply_lazyload_class() {
+		$altered_string = $this->instance->apply_lazyload_class('<img class="alignleft wp-image-6312" srcset="/some/image.jpg">');
+		$this->assertSame( $altered_string, '<img class="alignleft wp-image-6312 lazyload" srcset="/some/image.jpg">' );
+	}
+
+	function test_append_noscript() {
+		$original_string   = '<img class="alignleft wp-image-6312" srcset="/some/image.jpg">';
+		$responsive_string = '<img data-optimumx="auto" data-sizes="auto" data-srcset="/some/image.jpg">';
+		$expected_string = implode(' ', [$responsive_string, '<noscript>', $original_string, '</noscript>']);
+
+		$altered_string = $this->instance->append_noscript($responsive_string, $original_string);
+		$this->assertSame( $altered_string, $expected_string );
+	}
+
+	function test_do_string_transformations() {
+		$fixture_string = '<img class="alignleft wp-image-6312" srcset="/some/image.jpg">';
+		$expected_string = '<img class="alignleft wp-image-6312 lazyload" srcset="/some/image.jpg"> <noscript> <img class="alignleft wp-image-6312" srcset="/some/image.jpg"> </noscript>';
+		$reduced_string = $this->instance->do_string_transformations(['apply_lazyload_class','append_noscript'], $fixture_string);
+		$this->assertSame( $reduced_string, $expected_string);
+	}
+	
 }
 
