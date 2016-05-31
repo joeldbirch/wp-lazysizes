@@ -9,9 +9,11 @@
 class LazySizesTest extends WP_UnitTestCase {
 
 	private $instance;
+	private $fixture_img;
 
 	function setUp() {
 		$this->instance = LazySizes::get_instance();
+		$this->fixture_img = '<img class="alignleft wp-image-6312" srcset="/some/image.jpg">';
 	}
 
 	// helper function
@@ -59,12 +61,12 @@ class LazySizesTest extends WP_UnitTestCase {
 	}
 
 	function test_apply_lazyload_class() {
-		$altered_string = $this->instance->apply_lazyload_class('<img class="alignleft wp-image-6312" srcset="/some/image.jpg">');
+		$altered_string = $this->instance->apply_lazyload_class($this->fixture_img);
 		$this->assertSame( $altered_string, '<img class="alignleft wp-image-6312 lazyload" srcset="/some/image.jpg">' );
 	}
 
 	function test_append_noscript() {
-		$original_string   = '<img class="alignleft wp-image-6312" srcset="/some/image.jpg">';
+		$original_string   = $this->fixture_img;
 		$responsive_string = '<img data-optimumx="auto" data-sizes="auto" data-srcset="/some/image.jpg">';
 		$expected_string = implode(' ', [$responsive_string, '<noscript>', $original_string, '</noscript>']);
 
@@ -73,8 +75,8 @@ class LazySizesTest extends WP_UnitTestCase {
 	}
 
 	function test_do_string_transformations() {
-		$fixture_string = '<img class="alignleft wp-image-6312" srcset="/some/image.jpg">';
-		$expected_string = '<img class="alignleft wp-image-6312 lazyload" srcset="/some/image.jpg"> <noscript> <img class="alignleft wp-image-6312" srcset="/some/image.jpg"> </noscript>';
+		$fixture_string = $this->fixture_img;
+		$expected_string = '<img class="alignleft wp-image-6312 lazyload" srcset="/some/image.jpg"> <noscript> '.$fixture_string.' </noscript>';
 		$reduced_string = $this->instance->do_string_transformations(['apply_lazyload_class','append_noscript'], $fixture_string);
 		$this->assertSame( $reduced_string, $expected_string);
 	}
