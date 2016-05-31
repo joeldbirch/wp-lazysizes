@@ -127,20 +127,24 @@ class LazySizes {
         return $this->_add_class( $html, 'lazyload' );
     }
 
-    function filter_images( $content, $type = 'ratio' ) {
-
-        if ( is_feed()
+    public function should_not_filter_images() {
+        return is_feed()
             || intval( get_query_var( 'print' ) ) == 1
             || intval( get_query_var( 'printpage' ) ) == 1
-            || strpos( $_SERVER['HTTP_USER_AGENT'], 'Opera Mini' ) !== false
-        ) {
+            || strpos( $_SERVER['HTTP_USER_AGENT'], 'Opera Mini' ) !== false;
+    }
+
+    public function get_resp_img_replacement() {
+        $optimumx_setting = $this->_get_option('optimumx');
+        $str = ($optimumx_setting !== 'false' ) ? ["data-optimumx=\"$optimumx_setting\""] : [];
+        $str[] = 'data-sizes="auto" data-srcset=';
+        return implode(' ', $str);
+    }
+
+    function filter_images( $content, $type = 'ratio' ) {
+
+        if ( $this->should_not_filter_images() ) {
             return $content;
-        }
-
-        $respReplace = 'data-sizes="auto" data-srcset=';
-
-        if ( $this->_get_option('optimumx') != 'false' ) {
-            $respReplace = 'data-optimumx="' . $this->_get_option('optimumx') . '" ' . $respReplace;
         }
 
         $matches = array();
@@ -160,7 +164,7 @@ class LazySizes {
                 $replaceHTML = preg_replace( '/<img(.*?)src=/i',
                     '<img$1src="' . $placeholder_image . '" data-src=', $imgHTML );
 
-                $replaceHTML = preg_replace( '/srcset=/i', $respReplace, $replaceHTML );
+                $replaceHTML = preg_replace( '/srcset=/i', $this->get_resp_img_replacement(), $replaceHTML );
 
                 $replaceHTML = $this->_add_class( $replaceHTML, 'lazyload' );
 
