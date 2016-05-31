@@ -134,23 +134,44 @@ class LazySizes {
             || strpos( $_SERVER['HTTP_USER_AGENT'], 'Opera Mini' ) !== false;
     }
 
-    public function get_resp_img_replacement() {
+    public function get_resp_attrs() {
         $optimumx_setting = $this->_get_option('optimumx');
         $str = ($optimumx_setting !== 'false' ) ? ["data-optimumx=\"$optimumx_setting\""] : [];
         $str[] = 'data-sizes="auto" data-srcset=';
         return implode(' ', $str);
     }
 
-    function filter_images( $content, $type = 'ratio' ) {
+    public function swap_src($imgHTML) {
+        $placeholder_image = apply_filters( 'lazysizes_placeholder_image', 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' );
+        return preg_replace( '/<img(.*?)src=/i', '<img$1src="' . $placeholder_image . '" data-src=', $imgHTML );
+    }
 
-        if ( $this->should_not_filter_images() ) {
-            return $content;
-        }
+    public function apply_responsive_attrs($imgHTML) {
+        return preg_replace( '/srcset=/i', $this->get_resp_attrs(), $imgHTML );
+    }
+
+    public function apply_lazyload_class($imgHTML) {
+        return $this->_add_class( $imgHTML, 'lazyload' );
+    }
+
+    public function append_noscript($imgHTML, $original_imgHTML) {
+        return "$imgHTML <noscript> $original_imgHTML </noscript>";
+    }
+
+    // NOTE this function requires PHP v5.3 because of the 'use' keyword
+    // I guess I should use WordPress's apply_filters for this instead?
+    public function do_string_transformations($functions, $original_HTML) {
+        return array_reduce($functions, function($altered_HTML, $function) use ($original_HTML) {
+            return $this->$function($altered_HTML, $original_HTML);
+        }, $original_HTML);
+    }
+
+    public function filter_images( $content, $type = 'ratio' ) {
+
+        if ( $this->should_not_filter_images() ) { return $content; }
 
         $matches = array();
         $skip_images_regex = '/class=".*lazyload.*"/';
-        $placeholder_image = apply_filters( 'lazysizes_placeholder_image',
-            'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' );
         preg_match_all( '/<img\s+.*?>/', $content, $matches );
 
         $search = array();
@@ -158,17 +179,12 @@ class LazySizes {
 
         foreach ( $matches[0] as $imgHTML ) {
 
-            // Don't to the replacement if a skip class is provided and the image has the class.
+            // Don't do the replacement if a skip class is provided and the image has the class.
             if ( ! ( preg_match( $skip_images_regex, $imgHTML ) ) ) {
 
-                $replaceHTML = preg_replace( '/<img(.*?)src=/i',
-                    '<img$1src="' . $placeholder_image . '" data-src=', $imgHTML );
-
-                $replaceHTML = preg_replace( '/srcset=/i', $this->get_resp_img_replacement(), $replaceHTML );
-
-                $replaceHTML = $this->_add_class( $replaceHTML, 'lazyload' );
-
-                $replaceHTML .= '<noscript>' . $imgHTML . '</noscript>';
+                $replaceHTML = $this->do_string_transformations([
+                    'swap_src', 'apply_responsive_attrs', 'apply_lazyload_class', 'append_noscript'
+                ], $imgHTML);
 
                 if ( $type == 'ratio' && $this->_get_option('intrinsicRatio') != 'false' ) {
                     if ( preg_match( '/width=["|\']*(\d+)["|\']*/', $imgHTML, $width ) == 1
