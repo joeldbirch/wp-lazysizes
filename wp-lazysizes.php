@@ -79,7 +79,7 @@ class LazySizes {
         }
     }
 
-    protected function _get_option( $name ) {
+    private function _get_option( $name ) {
 
         if ( ! isset( self::$options[$name] ) ) {
             return false;
@@ -88,12 +88,12 @@ class LazySizes {
         return self::$options[$name];
     }
 
-    function add_styles() {
+    public function add_styles() {
 
         wp_enqueue_style( 'lazysizes', $this->get_url( 'css/lazysizes.min.css' ), array(), self::version );
     }
 
-    function add_scripts() {
+    public function add_scripts() {
 
         wp_enqueue_script( 'lazysizes', $this->get_url( 'build/wp-lazysizes.min.js' ), array(), self::version, false );
 
@@ -127,21 +127,21 @@ class LazySizes {
         return $this->_add_class( $html, 'lazyload' );
     }
 
-    public function should_not_filter_images() {
+    private function should_not_filter_images() {
         return is_feed()
             || intval( get_query_var( 'print' ) ) == 1
             || intval( get_query_var( 'printpage' ) ) == 1
             || strpos( $_SERVER['HTTP_USER_AGENT'], 'Opera Mini' ) !== false;
     }
 
-    public function get_resp_attrs() {
+    private function get_resp_attrs() {
         $optimumx_setting = $this->_get_option('optimumx');
         $str = ($optimumx_setting !== 'false' ) ? ["data-optimumx=\"$optimumx_setting\""] : [];
         $str[] = 'data-sizes="auto" data-srcset=';
         return implode(' ', $str);
     }
 
-    public function swap_src($imgHTML) {
+    private function swap_src($imgHTML) {
         $placeholder_image = apply_filters( 'lazysizes_placeholder_image', 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' );
         return preg_replace( '/<img(.*?)src=/i', '<img$1src="' . $placeholder_image . '" data-src=', $imgHTML );
     }
@@ -160,7 +160,7 @@ class LazySizes {
 
     // NOTE this function requires PHP v5.3 because of the 'use' keyword
     // I guess I should use WordPress's apply_filters for this instead?
-    public function do_string_transformations($functions, $original_HTML) {
+    private function do_string_transformations($functions, $original_HTML) {
         return array_reduce($functions, function($altered_HTML, $function) use ($original_HTML) {
             return $this->$function($altered_HTML, $original_HTML);
         }, $original_HTML);

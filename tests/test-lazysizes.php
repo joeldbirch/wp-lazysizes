@@ -45,14 +45,24 @@ class LazySizesTest extends WP_UnitTestCase {
 	}
 
 	function test_should_not_filter_images() {
+		$method = new ReflectionMethod(
+			'LazySizes', 'should_not_filter_images'
+		);
+		$method->setAccessible(true);
+
 		$_SERVER['HTTP_USER_AGENT'] = 'Opera Mini';
-		$this->assertTrue( $this->instance->should_not_filter_images() === true );
+		$this->assertTrue( $method->invoke($this->instance) === true );
 	}
 
 	function test_get_resp_attrs() {
-		$this->assertSame( $this->instance->get_resp_attrs(), 'data-sizes="auto" data-srcset=' );
+		$method = new ReflectionMethod(
+			'LazySizes', 'get_resp_attrs'
+		);
+		$method->setAccessible(true);
+
+		$this->assertSame( $method->invoke($this->instance), 'data-sizes="auto" data-srcset=' );
 		$this->set_option('optimumx','auto');
-		$this->assertSame( $this->instance->get_resp_attrs(), 'data-optimumx="auto" data-sizes="auto" data-srcset=' );
+		$this->assertSame( $method->invoke($this->instance), 'data-optimumx="auto" data-sizes="auto" data-srcset=' );
 	}
 
 	function test_apply_responsive_attrs() {
@@ -91,9 +101,14 @@ class LazySizesTest extends WP_UnitTestCase {
 	}
 
 	function test_do_string_transformations() {
+		$method = new ReflectionMethod(
+			'LazySizes', 'do_string_transformations'
+		);
+		$method->setAccessible(true);
+
 		$fixture_string = $this->fixture_img;
 		$expected_string = '<img class="alignleft wp-image-6312 lazyload" srcset="/some/image.jpg"> <noscript> '.$fixture_string.' </noscript>';
-		$reduced_string = $this->instance->do_string_transformations(['apply_lazyload_class','append_noscript'], $fixture_string);
+		$reduced_string = $method->invoke($this->instance, ['apply_lazyload_class','append_noscript'], $fixture_string);
 		$this->assertSame( $reduced_string, $expected_string);
 	}
 	
