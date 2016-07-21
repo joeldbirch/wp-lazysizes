@@ -146,7 +146,7 @@ class LazySizes {
         return preg_replace( '/<img(.*?)src=/i', '<img$1src="' . $placeholder_image . '" data-src=', $imgHTML );
     }
 
-    public function apply_responsive_attrs($imgHTML) {
+    private function apply_responsive_attrs($imgHTML) {
         return preg_replace( '/srcset=/i', $this->get_resp_attrs(), $imgHTML );
     }
 

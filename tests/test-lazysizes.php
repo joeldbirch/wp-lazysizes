@@ -56,7 +56,12 @@ class LazySizesTest extends WP_UnitTestCase {
 	}
 
 	function test_apply_responsive_attrs() {
-		$altered_string = $this->instance->apply_responsive_attrs('<img srcset="/some/image.jpg">');
+		$method = new ReflectionMethod(
+			'LazySizes', 'apply_responsive_attrs'
+		);
+		$method->setAccessible(true);
+
+		$altered_string = $method->invoke($this->instance, '<img srcset="/some/image.jpg">');
 		$this->assertSame( $altered_string, '<img data-optimumx="auto" data-sizes="auto" data-srcset="/some/image.jpg">' );
 	}
 
