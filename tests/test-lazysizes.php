@@ -70,7 +70,13 @@ class LazySizesTest extends WP_UnitTestCase {
 		$responsive_string = '<img data-optimumx="auto" data-sizes="auto" data-srcset="/some/image.jpg">';
 		$expected_string = implode(' ', [$responsive_string, '<noscript>', $original_string, '</noscript>']);
 
-		$altered_string = $this->instance->append_noscript($responsive_string, $original_string);
+		$method = new ReflectionMethod(
+			'LazySizes', 'append_noscript'
+		);
+
+		$method->setAccessible(true);
+
+		$altered_string = $method->invoke($this->instance, $responsive_string, $original_string);
 		$this->assertSame( $altered_string, $expected_string );
 	}
 

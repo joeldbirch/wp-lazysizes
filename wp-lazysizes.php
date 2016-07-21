@@ -154,7 +154,7 @@ class LazySizes {
         return $this->_add_class( $imgHTML, 'lazyload' );
     }
 
-    public function append_noscript($imgHTML, $original_imgHTML) {
+    private function append_noscript($imgHTML, $original_imgHTML) {
         return "$imgHTML <noscript> $original_imgHTML </noscript>";
     }
 
