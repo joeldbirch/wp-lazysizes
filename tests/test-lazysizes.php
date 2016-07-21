@@ -61,7 +61,12 @@ class LazySizesTest extends WP_UnitTestCase {
 	}
 
 	function test_apply_lazyload_class() {
-		$altered_string = $this->instance->apply_lazyload_class($this->fixture_img);
+		$method = new ReflectionMethod(
+			'LazySizes', 'apply_lazyload_class'
+		);
+		$method->setAccessible(true);
+
+		$altered_string = $method->invoke($this->instance, $this->fixture_img);
 		$this->assertSame( $altered_string, '<img class="alignleft wp-image-6312 lazyload" srcset="/some/image.jpg">' );
 	}
 

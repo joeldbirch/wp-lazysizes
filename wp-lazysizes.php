@@ -150,7 +150,7 @@ class LazySizes {
         return preg_replace( '/srcset=/i', $this->get_resp_attrs(), $imgHTML );
     }
 
-    public function apply_lazyload_class($imgHTML) {
+    private function apply_lazyload_class($imgHTML) {
         return $this->_add_class( $imgHTML, 'lazyload' );
     }
 
